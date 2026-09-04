@@ -22,6 +22,14 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
 
+// Static color map to prevent Tailwind from purging dynamic class strings in production
+const colorMap = {
+  blue:    'bg-blue-500/10 border-blue-500/30 text-blue-400',
+  emerald: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
+  amber:   'bg-amber-500/10 border-amber-500/30 text-amber-400',
+  rose:    'bg-rose-500/10 border-rose-500/30 text-rose-400',
+};
+
 export default function UserDashboard() {
   const [inspections, setInspections] = useState([]);
   const [stats, setStats] = useState(null);
@@ -91,7 +99,7 @@ export default function UserDashboard() {
           <motion.div key={idx} variants={itemVariants}>
              <PremiumCard tiltIntensity={20} className="h-full group">
                <div className="flex items-center justify-between mb-4">
-                 <div className={`p-3 rounded-xl bg-${stat.color}-500/10 border border-${stat.color}-500/30 text-${stat.color}-400 group-hover:scale-110 transition-transform`}>
+                 <div className={`p-3 rounded-xl border ${colorMap[stat.color]} group-hover:scale-110 transition-transform`}>
                    <stat.icon className="w-5 h-5" />
                  </div>
                </div>

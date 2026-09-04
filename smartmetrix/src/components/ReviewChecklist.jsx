@@ -9,35 +9,35 @@ export default function ReviewChecklist({ declarations = [], onChange }) {
   };
 
   const statusOptions = [
-    { key: 'valid', label: 'Compliant', color: 'text-emerald-700 bg-emerald-50 border-emerald-300 hover:bg-emerald-100', icon: CheckCircle2 },
-    { key: 'needs_review', label: 'Needs Review', color: 'text-amber-800 bg-amber-50 border-amber-300 hover:bg-amber-100', icon: AlertTriangle },
-    { key: 'invalid', label: 'Non-Compliant', color: 'text-rose-700 bg-rose-50 border-rose-300 hover:bg-rose-100', icon: XCircle },
-    { key: 'missing', label: 'Missing', color: 'text-slate-700 bg-slate-100 border-slate-300 hover:bg-slate-200', icon: MinusCircle }
+    { key: 'valid', label: 'Compliant', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/20', icon: CheckCircle2 },
+    { key: 'needs_review', label: 'Needs Review', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30 hover:bg-amber-500/20', icon: AlertTriangle },
+    { key: 'invalid', label: 'Non-Compliant', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30 hover:bg-rose-500/20', icon: XCircle },
+    { key: 'missing', label: 'Missing', color: 'text-slate-400 bg-slate-800 border-slate-700 hover:bg-slate-700', icon: MinusCircle }
   ];
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs font-sans">
-      <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+    <div className="glass-panel border border-slate-700/50 rounded-2xl overflow-hidden shadow-xs font-sans">
+      <div className="p-4 bg-slate-900/80 border-b border-slate-700/50 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <FileCheck className="w-4 h-4 text-blue-700" />
-          <h3 className="text-sm font-bold text-slate-900">
+          <FileCheck className="w-4 h-4 text-blue-400" />
+          <h3 className="text-sm font-bold text-white">
             Mandatory Packaging Declarations Evaluation
           </h3>
         </div>
-        <span className="text-xs font-semibold text-slate-500 font-mono">
+        <span className="text-xs font-semibold text-blue-400 font-mono">
           Rule 6 Checklist
         </span>
       </div>
 
-      <div className="divide-y divide-slate-200">
+      <div className="divide-y divide-slate-800">
         {declarations.map((item, idx) => (
-          <div key={idx} className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-slate-50/50 transition">
+          <div key={idx} className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-slate-800/30 transition">
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[11px] font-bold text-blue-700">{item.rule || `LM-00${idx+1}`}</span>
-                <span className="text-xs font-bold text-slate-900">{item.label}</span>
+                <span className="font-mono text-[11px] font-bold text-blue-400">{item.rule || `LM-00${idx+1}`}</span>
+                <span className="text-xs font-bold text-white">{item.label}</span>
               </div>
-              <p className="text-xs text-slate-700 mt-1 bg-slate-50 px-2.5 py-1 rounded border border-slate-200 font-mono font-medium">
+              <p className="text-xs text-slate-300 mt-1 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-slate-700/50 font-mono font-medium">
                 {item.value || 'Not provided'}
               </p>
             </div>
@@ -52,13 +52,13 @@ export default function ReviewChecklist({ declarations = [], onChange }) {
                     key={opt.key}
                     type="button"
                     onClick={() => handleStatusChange(idx, opt.key)}
-                    className={`px-2.5 py-1 rounded-md border text-xs font-bold flex items-center gap-1 transition ${
+                    className={`px-2.5 py-1 rounded-lg border text-xs font-bold flex items-center gap-1 transition-all ${
                       isSelected
-                        ? `${opt.color} ring-1 ring-blue-600 shadow-2xs`
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        ? `${opt.color} ring-1 ring-blue-500 shadow-md`
+                        : 'bg-slate-800/60 border-slate-700/60 text-slate-400 hover:text-white hover:bg-slate-700/50'
                     }`}
                   >
-                    <IconComp className={`w-3.5 h-3.5 ${isSelected ? '' : 'text-slate-400'}`} />
+                    <IconComp className={`w-3.5 h-3.5 ${isSelected ? '' : 'text-slate-500'}`} />
                     <span>{opt.label}</span>
                   </button>
                 );

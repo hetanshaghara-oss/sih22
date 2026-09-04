@@ -1,124 +1,129 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 export const inspectionService = {
+  // GET /api/inspections
   getInspections: async () => {
     try {
-      const response = await fetch(`${API_URL}/inspections`);
-      if (!response.ok) throw new Error('Failed to fetch inspections');
-      return await response.json();
+      const res = await fetch(`${API_URL}/inspections`, { signal: AbortSignal.timeout(6000) });
+      if (!res.ok) throw new Error('Failed to fetch inspections');
+      return await res.json();
     } catch (e) {
-      console.error(e);
+      console.error('inspectionService.getInspections error:', e);
       return [];
     }
   },
 
+  // GET /api/inspections/:id
   getInspectionById: async (id) => {
     try {
-      const response = await fetch(`${API_URL}/inspections/${id}`);
-      if (!response.ok) {
-        if (response.status === 404) return null;
+      const res = await fetch(`${API_URL}/inspections/${id}`, { signal: AbortSignal.timeout(6000) });
+      if (!res.ok) {
+        if (res.status === 404) return null;
         throw new Error('Failed to fetch inspection');
       }
-      return await response.json();
+      return await res.json();
     } catch (e) {
-      console.error(e);
+      console.error('inspectionService.getInspectionById error:', e);
       return null;
     }
   },
 
-  createInspection: async (inspectionPayload) => {
+  // POST /api/inspections
+  createInspection: async (payload) => {
     try {
-      const response = await fetch(`${API_URL}/inspections`, {
+      const res = await fetch(`${API_URL}/inspections`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(inspectionPayload)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(8000),
       });
-      if (!response.ok) throw new Error('Failed to create inspection');
-      return await response.json();
+      if (!res.ok) throw new Error('Failed to create inspection');
+      return await res.json();
     } catch (e) {
-      console.error(e);
+      console.error('inspectionService.createInspection error:', e);
       throw e;
     }
   },
 
+  // PUT /api/inspections/:id/review
   reviewInspection: async (id, reviewData) => {
     try {
-      const response = await fetch(`${API_URL}/inspections/${id}/review`, {
+      const res = await fetch(`${API_URL}/inspections/${id}/review`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(reviewData)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reviewData),
+        signal: AbortSignal.timeout(8000),
       });
-      if (!response.ok) throw new Error('Failed to review inspection');
-      return await response.json();
+      if (!res.ok) throw new Error('Failed to review inspection');
+      return await res.json();
     } catch (e) {
-      console.error(e);
+      console.error('inspectionService.reviewInspection error:', e);
       throw e;
     }
   },
 
+  // GET /api/notifications?role=...
   getNotifications: async (roleKey = 'all') => {
     try {
-      const response = await fetch(`${API_URL}/notifications?role=${roleKey}`);
-      if (!response.ok) throw new Error('Failed to fetch notifications');
-      return await response.json();
+      const res = await fetch(`${API_URL}/notifications?role=${roleKey}`, {
+        signal: AbortSignal.timeout(6000),
+      });
+      if (!res.ok) throw new Error('Failed to fetch notifications');
+      return await res.json();
     } catch (e) {
-      console.error(e);
+      console.error('inspectionService.getNotifications error:', e);
       return [];
     }
   },
 
+  // PUT /api/notifications/:id/read
   markNotificationRead: async (id) => {
     try {
-      const response = await fetch(`${API_URL}/notifications/${id}/read`, {
-        method: 'PUT'
+      const res = await fetch(`${API_URL}/notifications/${id}/read`, {
+        method: 'PUT',
+        signal: AbortSignal.timeout(6000),
       });
-      if (!response.ok) throw new Error('Failed to mark notification read');
-      
-      // Return updated notifications for the UI context
+      if (!res.ok) throw new Error('Failed to mark notification read');
       return inspectionService.getNotifications();
     } catch (e) {
-      console.error(e);
-      throw e;
+      console.error('inspectionService.markNotificationRead error:', e);
+      return [];
     }
   },
 
+  // POST /api/analyze-image
   analyzeImage: async (file) => {
     try {
       const formData = new FormData();
       formData.append('image', file);
-      
-      const response = await fetch(`${API_URL}/analyze-image`, {
+      const res = await fetch(`${API_URL}/analyze-image`, {
         method: 'POST',
-        body: formData
+        body: formData,
+        signal: AbortSignal.timeout(15000),
       });
-      if (!response.ok) throw new Error('Failed to analyze image');
-      return await response.json();
+      if (!res.ok) throw new Error('Failed to analyze image with OCR');
+      return await res.json();
     } catch (e) {
-      console.error('OCR Error:', e);
+      console.error('inspectionService.analyzeImage OCR error:', e);
       throw e;
     }
   },
 
+  // POST /api/upload
   uploadImages: async (files) => {
     try {
       const formData = new FormData();
-      files.forEach(file => {
-        formData.append('images', file);
-      });
-      
-      const response = await fetch(`${API_URL}/upload`, {
+      files.forEach((file) => formData.append('images', file));
+      const res = await fetch(`${API_URL}/upload`, {
         method: 'POST',
-        body: formData
+        body: formData,
+        signal: AbortSignal.timeout(15000),
       });
-      if (!response.ok) throw new Error('Failed to upload images');
-      return await response.json();
+      if (!res.ok) throw new Error('Failed to upload image files');
+      return await res.json();
     } catch (e) {
-      console.error('Upload Error:', e);
+      console.error('inspectionService.uploadImages error:', e);
       throw e;
     }
-  }
+  },
 };

@@ -238,6 +238,61 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Official Footer */}
+      <footer className="border-t border-slate-800 bg-slate-950/90 text-slate-400 font-sans">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="space-y-3 md:col-span-2">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
+                  <Scale className="w-4 h-4" />
+                </div>
+                <span className="text-base font-extrabold text-white">
+                  SmartMetri<span className="text-blue-400">X</span>
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+                Automated statutory verification engine for the Legal Metrology (Packaged Commodities) Rules, 2011. Built for enforcement and verification officers.
+              </p>
+              <div className="text-[11px] font-mono text-slate-500">
+                Ministry of Consumer Affairs, Food & Public Distribution — Government of India
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-xs font-bold text-white uppercase tracking-wider">Statutory Directives</div>
+              <ul className="space-y-1.5 text-xs text-slate-400">
+                <li><Link to="/rules-registry" className="hover:text-blue-400 transition">Rule 6 Mandatory Declarations</Link></li>
+                <li><a href="#rules" className="hover:text-blue-400 transition">Commodity Schedules</a></li>
+                <li><Link to="/rules-registry" className="hover:text-blue-400 transition">Font Height Standards</Link></li>
+                <li><Link to="/rules-registry" className="hover:text-blue-400 transition">Pack Size Metric Units</Link></li>
+              </ul>
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-xs font-bold text-white uppercase tracking-wider">Portals & Login</div>
+              <ul className="space-y-1.5 text-xs text-slate-400">
+                <li><Link to="/login?role=user" className="hover:text-blue-400 transition">Inspection Officer Desk</Link></li>
+                <li><Link to="/login?role=admin" className="hover:text-blue-400 transition">Verification Cell Queue</Link></li>
+                <li><Link to="/rules-registry" className="hover:text-blue-400 transition">Public Rules Matrix</Link></li>
+                <li><span className="text-slate-600 font-mono text-[11px]">Prototype SIH-PS34</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-10 pt-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+            <div>
+              © 2026 SmartMetriX — Smart India Hackathon Prototype (SIH PS34). All statutory rules aligned with LM(PC) Rules 2011.
+            </div>
+            <div className="flex items-center gap-4">
+              <Link to="/rules-registry" className="hover:text-slate-400 transition">Legal Framework</Link>
+              <span>•</span>
+              <Link to="/login" className="hover:text-slate-400 transition">Officer Portal</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

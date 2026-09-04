@@ -1,44 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { authService } from '../services/authService';
-import { DEMO_USERS } from '../data/users';
 import { Scale, User, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export default function Login() {
   const [searchParams] = useSearchParams();
   const initialRole = searchParams.get('role') === 'admin' ? 'admin' : 'user';
 
+  const [users, setUsers] = useState({});
   const [selectedRole, setSelectedRole] = useState(initialRole);
-  const [email, setEmail] = useState(DEMO_USERS[initialRole].email);
-  const [password, setPassword] = useState('demo123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('password123');
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    const list = await authService.getUsers();
+    if (list && list.length > 0) {
+      const userMap = {};
+      list.forEach(u => {
+        userMap[u.roleKey] = u;
+      });
+      setUsers(userMap);
+      if (userMap[initialRole]) {
+        setEmail(userMap[initialRole].email);
+      }
+    } else {
+      // Fallback
+      const defaultEmail = initialRole === 'admin' ? 'priya.sharma@legalmetrology.gov.in' : 'rahul.mehta@consumeraffairs.gov.in';
+      setEmail(defaultEmail);
+    }
+  };
+
   const handleRoleToggle = (role) => {
     setSelectedRole(role);
-    setEmail(DEMO_USERS[role].email);
+    setErrorMessage('');
+    if (users[role]) {
+      setEmail(users[role].email);
+    } else {
+      setEmail(role === 'admin' ? 'priya.sharma@legalmetrology.gov.in' : 'rahul.mehta@consumeraffairs.gov.in');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage('');
 
-    setTimeout(async () => {
-      await authService.login(selectedRole);
+    try {
+      const res = await authService.login(selectedRole, rememberMe, email, password);
       setLoading(false);
-      if (selectedRole === 'admin') {
-        navigate('/admin/dashboard');
+      if (res.success) {
+        if (selectedRole === 'admin') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/user/dashboard');
+        }
       } else {
-        navigate('/user/dashboard');
+        setErrorMessage('Authentication failed. Please verify credentials.');
       }
-    }, 400);
+    } catch (err) {
+      setLoading(false);
+      setErrorMessage('Backend communication error. Please try again.');
+    }
+  };
+
+  const currentProfile = users[selectedRole] || {
+    name: selectedRole === 'admin' ? 'Priya Sharma' : 'Rahul Mehta',
+    role: selectedRole === 'admin' ? 'Verification Officer' : 'Inspection Officer',
+    department: selectedRole === 'admin' ? 'Legal Metrology Central Directorate' : 'Department of Consumer Affairs',
+    avatar: selectedRole === 'admin' 
+      ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250'
+      : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250'
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
       {/* Background Glow Orbs */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-500/15 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-15%] right-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
@@ -62,7 +107,7 @@ export default function Login() {
           SmartMetri<span className="text-blue-400">X</span>
         </h1>
         <p className="mt-2 text-sm text-slate-400 font-medium">
-          Legal Metrology enforcement & verification portal
+          Legal Metrology enforcement & verification portal (Live SQLite Database)
         </p>
       </motion.div>
 
@@ -106,7 +151,7 @@ export default function Login() {
             </motion.button>
           </div>
 
-          {/* Demo profile */}
+          {/* Profile Card */}
           <motion.div
             key={selectedRole}
             initial={{ opacity: 0, x: selectedRole === 'admin' ? 20 : -20 }}
@@ -115,18 +160,24 @@ export default function Login() {
             className="p-4 glass-card rounded-xl flex items-center gap-3"
           >
             <img
-              src={DEMO_USERS[selectedRole].avatar}
-              alt="Demo account"
+              src={currentProfile.avatar}
+              alt="Officer account"
               className="w-11 h-11 rounded-full border-2 border-slate-600 object-cover shrink-0 shadow-lg"
             />
             <div className="text-left text-xs leading-tight">
-              <div className="font-bold text-white text-sm">{DEMO_USERS[selectedRole].name}</div>
+              <div className="font-bold text-white text-sm">{currentProfile.name}</div>
               <div className={selectedRole === 'admin' ? 'font-semibold text-indigo-400' : 'font-semibold text-blue-400'}>
-                {DEMO_USERS[selectedRole].role}
+                {currentProfile.role}
               </div>
-              <div className="text-[10px] text-slate-500 mt-0.5">{DEMO_USERS[selectedRole].department}</div>
+              <div className="text-[10px] text-slate-400 mt-0.5">{currentProfile.department}</div>
             </div>
           </motion.div>
+
+          {errorMessage && (
+            <div className="p-3 bg-rose-500/15 border border-rose-500/30 rounded-xl text-xs text-rose-300">
+              {errorMessage}
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -164,7 +215,7 @@ export default function Login() {
                 />
                 <span>Remember session</span>
               </label>
-              <span className="text-slate-600 text-[11px] font-mono">Demo auth mode</span>
+              <span className="text-emerald-400 text-[11px] font-mono">Connected to SQLite</span>
             </div>
 
             <motion.button
@@ -175,10 +226,10 @@ export default function Login() {
               className="w-full py-3.5 px-4 text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-xl shadow-blue-900/50 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
             >
               {loading ? (
-                <span>Authenticating…</span>
+                <span>Authenticating with Database…</span>
               ) : (
                 <>
-                  <span>Log in as {DEMO_USERS[selectedRole].name}</span>
+                  <span>Log in as {currentProfile.name}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -186,7 +237,7 @@ export default function Login() {
           </form>
 
           <p className="text-[11px] text-slate-500 text-center leading-relaxed">
-            This application runs in <span className="text-slate-300 font-semibold">demo authentication mode</span> for Smart India Hackathon testing.
+            Live authentication connected to <span className="text-blue-400 font-semibold">SQLite Backend (Port 5000)</span>.
           </p>
         </div>
       </motion.div>

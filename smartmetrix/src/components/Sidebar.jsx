@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { authService } from '../services/authService';
+import { DEMO_USERS } from '../data/users';
 import {
   LayoutDashboard,
   ClipboardList,
@@ -16,6 +18,7 @@ import {
 
 export default function Sidebar({ activeTab, onTabChange }) {
   const location = useLocation();
+  const currentUser = authService.getCurrentUser() || DEMO_USERS.admin;
 
   const menuItems = [
     { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
@@ -37,8 +40,8 @@ export default function Sidebar({ activeTab, onTabChange }) {
         <div className="text-[10px] font-mono text-blue-400 uppercase tracking-widest font-bold">
           Role Active
         </div>
-        <div className="text-xs font-bold text-white mt-0.5">Verification Officer (Admin)</div>
-        <div className="text-[11px] text-slate-400">Legal Metrology Directorate</div>
+        <div className="text-xs font-bold text-white mt-0.5">{currentUser.role} ({currentUser.roleKey === 'admin' ? 'Admin' : 'Officer'})</div>
+        <div className="text-[11px] text-slate-400">{currentUser.department}</div>
       </div>
 
       <div className="space-y-1">

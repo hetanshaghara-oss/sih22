@@ -2,18 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { authService } from '../services/authService';
+import { DEMO_USERS } from '../data/users';
 import NotificationDropdown from './NotificationDropdown';
 import { Scale, PlusCircle, History, FileText, User, LogOut, LayoutDashboard, Menu, X, Building2 } from 'lucide-react';
 
 export default function Navbar() {
-  const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
+  const [currentUser, setCurrentUser] = useState(authService.getCurrentUser() || DEMO_USERS.user);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    setCurrentUser(authService.getCurrentUser());
+    setCurrentUser(authService.getCurrentUser() || DEMO_USERS.user);
   }, [location]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = async () => {
     await authService.logout();
@@ -37,7 +43,7 @@ export default function Navbar() {
 
   return (
     <header className="no-print sticky top-0 z-50 px-4 pt-4 pb-2">
-      <motion.div 
+      <motion.div
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -45,7 +51,7 @@ export default function Navbar() {
       >
         {/* Brand Logo */}
         <Link to={isAdmin ? '/admin/dashboard' : '/user/dashboard'} className="flex items-center gap-3 group relative overflow-hidden">
-          <motion.div 
+          <motion.div
             whileHover={{ rotate: 180 }}
             transition={{ duration: 0.5 }}
             className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-700 to-blue-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/30"
@@ -88,7 +94,7 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* User Identity & Notifications */}
+        {/* Right side: Notifications + User + Hamburger */}
         <div className="flex items-center gap-3">
           <NotificationDropdown role={currentUser.roleKey} />
 
@@ -110,13 +116,79 @@ export default function Navbar() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleLogout}
-            className="p-2 ml-2 text-slate-400 hover:text-white hover:bg-rose-500/20 hover:border-rose-500/50 border border-transparent rounded-xl transition-all"
+            className="hidden sm:flex p-2 ml-2 text-slate-400 hover:text-white hover:bg-rose-500/20 hover:border-rose-500/50 border border-transparent rounded-xl transition-all"
             title="Sign Out"
           >
             <LogOut className="w-4 h-4" />
           </motion.button>
+
+          {/* Hamburger — mobile only */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            className="md:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/60 border border-slate-700/50 transition-all"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </motion.button>
         </div>
       </motion.div>
+
+      {/* Mobile Dropdown Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, y: -10, scaleY: 0.95 }}
+            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+            exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="md:hidden max-w-7xl mx-auto mt-2 glass-panel rounded-2xl px-4 py-4 space-y-1 origin-top"
+          >
+            {/* User Identity */}
+            <div className="flex items-center gap-3 px-3 py-2.5 mb-2 border-b border-slate-700/50">
+              <img
+                src={currentUser.avatar}
+                alt={currentUser.name}
+                className="w-9 h-9 rounded-full border-2 border-slate-700 object-cover"
+              />
+              <div className="leading-tight">
+                <div className="text-xs font-bold text-white">{currentUser.name}</div>
+                <div className="text-[10px] font-semibold text-blue-400 uppercase tracking-wider">{currentUser.role}</div>
+              </div>
+            </div>
+
+            {/* Nav Links */}
+            {links.map((link) => {
+              const IconComp = link.icon;
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                    isActive
+                      ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+                  }`}
+                >
+                  <IconComp className="w-4 h-4" />
+                  {link.label}
+                </Link>
+              );
+            })}
+
+            {/* Logout */}
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all mt-1 border-t border-slate-700/50 pt-3"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

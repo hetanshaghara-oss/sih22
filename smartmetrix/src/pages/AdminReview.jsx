@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { inspectionService } from '../services/inspectionService';
+import { authService } from '../services/authService';
 import BoundingBoxOverlay from '../components/BoundingBoxOverlay';
 import ReviewChecklist from '../components/ReviewChecklist';
 import ViolationCard from '../components/ViolationCard';
 import LoadingState from '../components/LoadingState';
-import { ArrowLeft, ShieldCheck, CheckCircle2, AlertTriangle, XCircle, RefreshCw, Send, FileText } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, CheckCircle2, AlertTriangle, XCircle, RefreshCw, Send } from 'lucide-react';
 
 export default function AdminReview() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const currentUser = authService.getCurrentUser();
 
   const [inspection, setInspection] = useState(null);
   const [declarations, setDeclarations] = useState([]);
@@ -51,12 +53,16 @@ export default function AdminReview() {
 
   const handleFinalSubmission = async () => {
     setSaving(true);
+    const officerAttribution = currentUser
+      ? `${currentUser.name} (${currentUser.role})`
+      : 'Priya Sharma (Verification Officer)';
+
     const reviewPayload = {
       status: decision,
       declarations,
       violations,
       adminRemarks,
-      verifiedBy: "Priya Sharma (Verification Officer)"
+      verifiedBy: officerAttribution
     };
 
     await inspectionService.reviewInspection(id, reviewPayload);
@@ -71,24 +77,24 @@ export default function AdminReview() {
   if (loading || !inspection) return <LoadingState message="Opening Legal Metrology Inspection Review Studio..." />;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-panel p-6 rounded-2xl border border-slate-700/50">
         <div className="flex items-center gap-3">
-          <Link to="/admin/queue" className="text-slate-400 hover:text-slate-700">
+          <Link to="/admin/queue" className="text-slate-400 hover:text-white transition">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-bold text-slate-500">{inspection.id}</span>
-              <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-100 text-blue-800 rounded uppercase">
+              <span className="font-mono text-xs font-bold text-blue-400">{inspection.id}</span>
+              <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/30 rounded uppercase">
                 Under Officer Review
               </span>
             </div>
-            <h1 className="text-2xl font-extrabold text-slate-900 mt-0.5">
+            <h1 className="text-2xl font-black text-white mt-0.5 text-glow">
               Review: {inspection.productName}
             </h1>
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="text-xs text-slate-400 font-medium">
               Manufacturer: {inspection.manufacturer} | Submitter: {inspection.submittedBy} ({inspection.submittedByBadge})
             </p>
           </div>
@@ -96,7 +102,7 @@ export default function AdminReview() {
 
         <button
           onClick={() => setShowConfirmModal(true)}
-          className="px-6 py-3 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md flex items-center gap-2 transition"
+          className="px-6 py-3 text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-400 rounded-xl shadow-lg shadow-indigo-900/50 flex items-center gap-2 transition"
         >
           <Send className="w-4 h-4" />
           <span>Finalize Officer Review</span>
@@ -107,7 +113,7 @@ export default function AdminReview() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Image Viewer with Bounding Box Overlays */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-slate-900 rounded-2xl border border-slate-800 p-4 text-white space-y-3">
+          <div className="glass-panel rounded-2xl border border-slate-700/50 p-4 text-white space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold">Uploaded Evidence Packaging</span>
               <span className="text-[11px] font-mono text-slate-400">{inspection.images?.length || 1} image(s)</span>
@@ -132,11 +138,11 @@ export default function AdminReview() {
           {/* Violations Management */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
+              <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-400" />
                 <span>Flagged Legal Metrology Violations ({violations.length})</span>
               </h3>
-              <span className="text-xs text-slate-500 font-medium">Click to confirm or dismiss</span>
+              <span className="text-xs text-slate-400 font-medium">Click to confirm or dismiss</span>
             </div>
 
             <div className="space-y-3">
@@ -153,23 +159,23 @@ export default function AdminReview() {
           </div>
 
           {/* Officer Decision Form Section */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
-            <div className="border-b border-slate-100 pb-3">
-              <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-indigo-600" />
+          <div className="glass-panel p-6 rounded-2xl border border-slate-700/50 space-y-5">
+            <div className="border-b border-slate-700/50 pb-3">
+              <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-indigo-400" />
                 <span>Official Officer Enforcement Decision</span>
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 Select final compliance classification under Legal Metrology Rules, 2011.
               </p>
             </div>
 
             {/* Decision Radio Options */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <label
-                className={`p-3.5 rounded-xl border-2 cursor-pointer flex items-center gap-3 transition ${decision === 'compliant'
-                    ? 'border-emerald-500 bg-emerald-50/60 ring-1 ring-emerald-500'
-                    : 'border-slate-200 bg-white hover:bg-slate-50'
+                className={`p-3.5 rounded-xl border cursor-pointer flex items-center gap-3 transition-all ${decision === 'compliant'
+                    ? 'border-emerald-500 bg-emerald-500/15 ring-1 ring-emerald-500 shadow-md'
+                    : 'border-slate-700/50 bg-slate-900/60 hover:bg-slate-800/60'
                   }`}
               >
                 <input
@@ -178,20 +184,20 @@ export default function AdminReview() {
                   value="compliant"
                   checked={decision === 'compliant'}
                   onChange={(e) => setDecision(e.target.value)}
-                  className="text-emerald-600 focus:ring-emerald-500"
+                  className="text-emerald-500 focus:ring-emerald-500"
                 />
                 <div>
-                  <div className="text-xs font-bold text-emerald-950 flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Verified Compliant
+                  <div className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Verified Compliant
                   </div>
-                  <div className="text-[10px] text-emerald-700 mt-0.5">Passes all Rule 6 provisions.</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">Passes all Rule 6 provisions.</div>
                 </div>
               </label>
 
               <label
-                className={`p-3.5 rounded-xl border-2 cursor-pointer flex items-center gap-3 transition ${decision === 'partially_compliant'
-                    ? 'border-amber-500 bg-amber-50/60 ring-1 ring-amber-500'
-                    : 'border-slate-200 bg-white hover:bg-slate-50'
+                className={`p-3.5 rounded-xl border cursor-pointer flex items-center gap-3 transition-all ${decision === 'partially_compliant'
+                    ? 'border-amber-500 bg-amber-500/15 ring-1 ring-amber-500 shadow-md'
+                    : 'border-slate-700/50 bg-slate-900/60 hover:bg-slate-800/60'
                   }`}
               >
                 <input
@@ -200,20 +206,20 @@ export default function AdminReview() {
                   value="partially_compliant"
                   checked={decision === 'partially_compliant'}
                   onChange={(e) => setDecision(e.target.value)}
-                  className="text-amber-600 focus:ring-amber-500"
+                  className="text-amber-500 focus:ring-amber-500"
                 />
                 <div>
-                  <div className="text-xs font-bold text-amber-950 flex items-center gap-1">
-                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600" /> Partially Compliant
+                  <div className="text-xs font-bold text-amber-400 flex items-center gap-1">
+                    <AlertTriangle className="w-3.5 h-3.5" /> Partially Compliant
                   </div>
-                  <div className="text-[10px] text-amber-700 mt-0.5">Minor defects or unreadable stamp.</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">Minor defects or unreadable stamp.</div>
                 </div>
               </label>
 
               <label
-                className={`p-3.5 rounded-xl border-2 cursor-pointer flex items-center gap-3 transition ${decision === 'non_compliant'
-                    ? 'border-rose-500 bg-rose-50/60 ring-1 ring-rose-500'
-                    : 'border-slate-200 bg-white hover:bg-slate-50'
+                className={`p-3.5 rounded-xl border cursor-pointer flex items-center gap-3 transition-all ${decision === 'non_compliant'
+                    ? 'border-rose-500 bg-rose-500/15 ring-1 ring-rose-500 shadow-md'
+                    : 'border-slate-700/50 bg-slate-900/60 hover:bg-slate-800/60'
                   }`}
               >
                 <input
@@ -222,20 +228,20 @@ export default function AdminReview() {
                   value="non_compliant"
                   checked={decision === 'non_compliant'}
                   onChange={(e) => setDecision(e.target.value)}
-                  className="text-rose-600 focus:ring-rose-500"
+                  className="text-rose-500 focus:ring-rose-500"
                 />
                 <div>
-                  <div className="text-xs font-bold text-rose-950 flex items-center gap-1">
-                    <XCircle className="w-3.5 h-3.5 text-rose-600" /> Non-Compliant / Rejected
+                  <div className="text-xs font-bold text-rose-400 flex items-center gap-1">
+                    <XCircle className="w-3.5 h-3.5" /> Non-Compliant / Rejected
                   </div>
-                  <div className="text-[10px] text-rose-700 mt-0.5">Mandatory omissions or violations.</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">Mandatory omissions or violations.</div>
                 </div>
               </label>
 
               <label
-                className={`p-3.5 rounded-xl border-2 cursor-pointer flex items-center gap-3 transition ${decision === 'needs_correction'
-                    ? 'border-purple-500 bg-purple-50/60 ring-1 ring-purple-500'
-                    : 'border-slate-200 bg-white hover:bg-slate-50'
+                className={`p-3.5 rounded-xl border cursor-pointer flex items-center gap-3 transition-all ${decision === 'needs_correction'
+                    ? 'border-purple-500 bg-purple-500/15 ring-1 ring-purple-500 shadow-md'
+                    : 'border-slate-700/50 bg-slate-900/60 hover:bg-slate-800/60'
                   }`}
               >
                 <input
@@ -244,20 +250,20 @@ export default function AdminReview() {
                   value="needs_correction"
                   checked={decision === 'needs_correction'}
                   onChange={(e) => setDecision(e.target.value)}
-                  className="text-purple-600 focus:ring-purple-500"
+                  className="text-purple-500 focus:ring-purple-500"
                 />
                 <div>
-                  <div className="text-xs font-bold text-purple-950 flex items-center gap-1">
-                    <RefreshCw className="w-3.5 h-3.5 text-purple-600" /> Request Correction
+                  <div className="text-xs font-bold text-purple-400 flex items-center gap-1">
+                    <RefreshCw className="w-3.5 h-3.5" /> Request Correction
                   </div>
-                  <div className="text-[10px] text-purple-700 mt-0.5">Return to submitter for clearer image.</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">Return to submitter for clearer image.</div>
                 </div>
               </label>
             </div>
 
             {/* Remarks TextArea */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase">
+              <label className="block text-xs font-bold text-slate-300 uppercase mb-1.5">
                 Official Verification Remarks & Directive
               </label>
               <textarea
@@ -265,13 +271,13 @@ export default function AdminReview() {
                 value={adminRemarks}
                 onChange={(e) => setAdminRemarks(e.target.value)}
                 placeholder="Enter officer notes or corrective instructions for submitter..."
-                className="mt-1 w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500"
+                className="w-full p-3 bg-slate-800/60 border border-slate-700/60 rounded-xl text-xs font-medium text-white focus:ring-2 focus:ring-indigo-500 transition-all"
               />
             </div>
 
             <button
               onClick={() => setShowConfirmModal(true)}
-              className="w-full py-3.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-lg flex items-center justify-center gap-2 transition"
+              className="w-full py-3.5 text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-400 rounded-xl shadow-lg shadow-indigo-900/50 flex items-center justify-center gap-2 transition-all"
             >
               <Send className="w-4 h-4" />
               <span>Save Review & Return Result to Submitter</span>
@@ -282,26 +288,26 @@ export default function AdminReview() {
 
       {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-slate-200">
-            <div className="flex items-center gap-3 text-indigo-600">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="glass-panel rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-slate-700/60 bg-slate-900/95">
+            <div className="flex items-center gap-3 text-indigo-400">
               <ShieldCheck className="w-8 h-8" />
               <div>
-                <h3 className="text-base font-extrabold text-slate-900">Confirm Legal Decision</h3>
-                <p className="text-xs text-slate-500">Legal Metrology Officer Directives</p>
+                <h3 className="text-base font-extrabold text-white">Confirm Legal Decision</h3>
+                <p className="text-xs text-slate-400">Legal Metrology Officer Directives</p>
               </div>
             </div>
 
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Are you sure you want to mark inspection <strong className="font-mono text-slate-900">{id}</strong> as{' '}
-              <span className="font-bold text-indigo-700 uppercase">{decision.replace('_', ' ')}</span>? The result and updated score will be returned to officer {inspection.submittedBy}.
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Are you sure you want to mark inspection <strong className="font-mono text-blue-400">{id}</strong> as{' '}
+              <span className="font-bold text-indigo-400 uppercase">{decision.replace('_', ' ')}</span>? The result and updated score will be returned to officer {inspection.submittedBy}.
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setShowConfirmModal(false)}
-                className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg"
+                className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition"
               >
                 Cancel
               </button>
@@ -309,7 +315,7 @@ export default function AdminReview() {
                 type="button"
                 disabled={saving}
                 onClick={handleFinalSubmission}
-                className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-md transition disabled:opacity-50"
+                className="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-400 rounded-lg shadow-md transition disabled:opacity-50"
               >
                 {saving ? 'Submitting Result...' : 'Confirm & Send Result'}
               </button>

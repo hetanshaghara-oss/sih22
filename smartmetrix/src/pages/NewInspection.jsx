@@ -20,6 +20,7 @@ export default function NewInspection() {
   const [category, setCategory] = useState('Food Grain');
   const [priority, setPriority] = useState('Normal');
   const [notes, setNotes] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -36,22 +37,21 @@ export default function NewInspection() {
       alert('Please upload or select at least one product label image before proceeding.');
       return;
     }
-    
+
     let processedImages = [...images];
     let ocrData = null;
-    
+
     const realFiles = processedImages.filter(img => img.file).map(img => img.file);
-    
+
     if (realFiles.length > 0) {
       try {
-        const btn = document.getElementById('continue-btn');
-        if(btn) { btn.disabled = true; btn.innerHTML = 'Uploading & Processing...'; }
-        
+        setUploading(true);
+
         const inspectionService = (await import('../services/inspectionService')).inspectionService;
-        
+
         const uploadResult = await inspectionService.uploadImages(realFiles);
         const permanentUrls = uploadResult.urls;
-        
+
         let urlIndex = 0;
         processedImages = processedImages.map(img => {
           if (img.file) {
@@ -70,6 +70,8 @@ export default function NewInspection() {
       } catch (err) {
         console.error(err);
         alert('Processing failed. Falling back to manual entry.');
+      } finally {
+        setUploading(false);
       }
     }
 
@@ -180,12 +182,13 @@ export default function NewInspection() {
         <motion.button
           id="continue-btn"
           onClick={handleProceed}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="px-6 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-xl shadow-blue-900/50 flex items-center gap-2 transition-all"
+          disabled={uploading}
+          whileHover={{ scale: uploading ? 1 : 1.05 }}
+          whileTap={{ scale: uploading ? 1 : 0.95 }}
+          className="px-6 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-xl shadow-blue-900/50 flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span>Continue to Review</span>
-          <ArrowRight className="w-4 h-4" />
+          <span>{uploading ? 'Uploading & Processing...' : 'Continue to Review'}</span>
+          {!uploading && <ArrowRight className="w-4 h-4" />}
         </motion.button>
       </motion.div>
     </motion.div>

@@ -1,19 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LEGAL_METROLOGY_RULES } from '../data/rules';
+import { rulesService } from '../services/rulesService';
+import LoadingState from '../components/LoadingState';
 import { Scale, ShieldCheck, ArrowLeft, Search, Filter, CheckCircle2, AlertCircle, BookOpen, FileText } from 'lucide-react';
 
 export default function RulesRegistry() {
+  const [rules, setRules] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSeverity, setSelectedSeverity] = useState('All');
 
-  const filteredRules = LEGAL_METROLOGY_RULES.filter((rule) => {
+  useEffect(() => {
+    loadRules();
+  }, []);
+
+  const loadRules = async () => {
+    setLoading(true);
+    const data = await rulesService.getRules();
+    setRules(data);
+    setLoading(false);
+  };
+
+  const filteredRules = rules.filter((rule) => {
     const matchesSearch =
-      rule.declaration.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rule.ruleNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rule.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rule.legalReference.toLowerCase().includes(searchQuery.toLowerCase());
+      rule.declaration?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      rule.ruleNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      rule.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      rule.legalReference?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesSeverity = selectedSeverity === 'All' || rule.severity === selectedSeverity;
 
@@ -93,117 +107,123 @@ export default function RulesRegistry() {
             <div className="shrink-0 flex md:flex-col items-start md:items-end justify-between gap-2">
               <span className="px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold rounded-xl flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>8 Statutory Rules Active</span>
+                <span>{rules.length} Statutory Rules Active</span>
               </span>
-              <span className="text-[11px] text-slate-500 font-mono">Rule 6 Statutory Matrix</span>
+              <span className="text-[11px] text-slate-500 font-mono">Live SQLite Registry</span>
             </div>
           </div>
         </motion.div>
 
-        {/* Search & Filter Toolbar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="relative w-full sm:w-96">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-            <input
-              type="text"
-              placeholder="Search rule number, declaration, or reference..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-            />
-          </div>
+        {loading ? (
+          <LoadingState message="Loading Legal Metrology Rules Registry from Database..." />
+        ) : (
+          <>
+            {/* Search & Filter Toolbar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="relative w-full sm:w-96">
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <input
+                  type="text"
+                  placeholder="Search rule number, declaration, or reference..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                />
+              </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
-            <div className="text-xs font-bold text-slate-400 flex items-center gap-1.5 mr-2">
-              <Filter className="w-3.5 h-3.5 text-blue-400" />
-              <span>Severity:</span>
-            </div>
-            {['All', 'High', 'Medium', 'Low'].map((sev) => (
-              <button
-                key={sev}
-                onClick={() => setSelectedSeverity(sev)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  selectedSeverity === sev
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-900/40'
-                    : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
-                }`}
-              >
-                {sev}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Rules Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredRules.map((rule, idx) => (
-            <motion.div
-              key={rule.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: idx * 0.05 }}
-              className="glass-panel p-6 rounded-2xl border border-slate-800/80 hover:border-slate-700 transition-all group flex flex-col justify-between space-y-4"
-            >
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-blue-400 px-2.5 py-1 bg-blue-950/60 rounded-lg border border-blue-900/50">
-                      {rule.ruleNumber}
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-                      ID: {rule.id}
-                    </span>
-                  </div>
-                  <span
-                    className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full border flex items-center gap-1 ${
-                      rule.severity === 'High'
-                        ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
-                        : rule.severity === 'Medium'
-                        ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                        : 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+              <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+                <div className="text-xs font-bold text-slate-400 flex items-center gap-1.5 mr-2">
+                  <Filter className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Severity:</span>
+                </div>
+                {['All', 'High', 'Medium', 'Low'].map((sev) => (
+                  <button
+                    key={sev}
+                    onClick={() => setSelectedSeverity(sev)}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      selectedSeverity === sev
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-900/40'
+                        : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
                     }`}
                   >
-                    <AlertCircle className="w-3 h-3" />
-                    {rule.severity} Severity
-                  </span>
-                </div>
-
-                <h3 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
-                  {rule.declaration}
-                </h3>
-
-                <p className="text-xs text-slate-400 leading-relaxed font-normal">
-                  {rule.description}
-                </p>
+                    {sev}
+                  </button>
+                ))}
               </div>
+            </div>
 
-              <div className="pt-4 border-t border-slate-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px]">
-                <div className="flex items-center gap-1.5 text-slate-400 font-mono truncate">
-                  <FileText className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                  <span className="truncate">{rule.legalReference}</span>
-                </div>
-                <span className="px-2 py-0.5 bg-slate-800/60 rounded text-[10px] text-slate-300 font-medium shrink-0">
-                  {rule.version}
-                </span>
+            {/* Rules Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {filteredRules.map((rule, idx) => (
+                <motion.div
+                  key={rule.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: idx * 0.05 }}
+                  className="glass-panel p-6 rounded-2xl border border-slate-800/80 hover:border-slate-700 transition-all group flex flex-col justify-between space-y-4"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-blue-400 px-2.5 py-1 bg-blue-950/60 rounded-lg border border-blue-900/50">
+                          {rule.ruleNumber}
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+                          ID: {rule.id}
+                        </span>
+                      </div>
+                      <span
+                        className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full border flex items-center gap-1 ${
+                          rule.severity === 'High'
+                            ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                            : rule.severity === 'Medium'
+                            ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                            : 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                        }`}
+                      >
+                        <AlertCircle className="w-3 h-3" />
+                        {rule.severity} Severity
+                      </span>
+                    </div>
+
+                    <h3 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
+                      {rule.declaration}
+                    </h3>
+
+                    <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                      {rule.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px]">
+                    <div className="flex items-center gap-1.5 text-slate-400 font-mono truncate">
+                      <FileText className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                      <span className="truncate">{rule.legalReference}</span>
+                    </div>
+                    <span className="px-2 py-0.5 bg-slate-800/60 rounded text-[10px] text-slate-300 font-medium shrink-0">
+                      {rule.status || 'Active'}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {filteredRules.length === 0 && (
+              <div className="glass-panel p-12 rounded-2xl text-center text-slate-400 space-y-3">
+                <Search className="w-8 h-8 text-slate-600 mx-auto" />
+                <p className="text-sm font-semibold">No statutory rules match your current search or severity filter.</p>
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSelectedSeverity('All');
+                  }}
+                  className="px-4 py-2 bg-slate-800 text-xs font-bold text-white rounded-xl hover:bg-slate-700 transition"
+                >
+                  Reset Filters
+                </button>
               </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {filteredRules.length === 0 && (
-          <div className="glass-panel p-12 rounded-2xl text-center text-slate-400 space-y-3">
-            <Search className="w-8 h-8 text-slate-600 mx-auto" />
-            <p className="text-sm font-semibold">No statutory rules match your current search or severity filter.</p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedSeverity('All');
-              }}
-              className="px-4 py-2 bg-slate-800 text-xs font-bold text-white rounded-xl hover:bg-slate-700 transition"
-            >
-              Reset Filters
-            </button>
-          </div>
+            )}
+          </>
         )}
 
         {/* Disclaimer Footer Note */}

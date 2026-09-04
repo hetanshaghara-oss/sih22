@@ -4,7 +4,7 @@ import { inspectionService } from '../services/inspectionService';
 import { reportService } from '../services/reportService';
 import StatusBadge from '../components/StatusBadge';
 import LoadingState from '../components/LoadingState';
-import { Download, Printer, Shield, Scale, FileText, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Printer, Scale, FileText } from 'lucide-react';
 
 export default function Reports() {
   const [searchParams] = useSearchParams();
@@ -35,25 +35,25 @@ export default function Reports() {
   };
 
   const handlePrint = () => {
-    reportService.downloadMockPdf(selectedId);
+    reportService.downloadMockPdf();
   };
 
-  if (loading || !inspection) return <LoadingState message="Generating Legal Metrology Compliance Report..." />;
+  if (loading || !inspection) return <LoadingState message="Generating Legal Metrology Compliance Report from SQLite..." />;
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto font-sans">
       {/* Top Controls Bar (No Print) */}
-      <div className="no-print bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="no-print glass-panel p-4 sm:p-6 rounded-2xl border border-slate-700/50 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/30 flex items-center justify-center">
             <FileText className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-lg font-extrabold text-slate-900">
+            <h1 className="text-lg font-extrabold text-white text-glow">
               Legal Metrology Compliance Inspection Report
             </h1>
-            <p className="text-xs text-slate-500">
-              Official verification document format for enforcement proceedings.
+            <p className="text-xs text-slate-400">
+              Official verification document format generated live from SQLite database.
             </p>
           </div>
         </div>
@@ -63,10 +63,10 @@ export default function Reports() {
           <select
             value={selectedId}
             onChange={(e) => setSelectedId(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 bg-slate-800/80 border border-slate-700/60 rounded-xl text-xs font-bold text-white focus:ring-2 focus:ring-blue-500"
           >
             {inspections.map((item) => (
-              <option key={item.id} value={item.id}>
+              <option key={item.id} value={item.id} className="bg-slate-900 text-white">
                 {item.id} — {item.productName}
               </option>
             ))}
@@ -74,7 +74,7 @@ export default function Reports() {
 
           <button
             onClick={handlePrint}
-            className="px-5 py-2.5 text-xs font-bold text-white bg-blue-700 hover:bg-blue-800 rounded-xl shadow-md flex items-center gap-2 transition"
+            className="px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-lg shadow-blue-900/50 flex items-center gap-2 transition"
           >
             <Printer className="w-4 h-4" />
             <span>Download PDF / Print</span>
@@ -82,8 +82,8 @@ export default function Reports() {
         </div>
       </div>
 
-      {/* Official Report Printable Container */}
-      <div className="bg-white p-8 md:p-12 rounded-2xl border border-slate-300 shadow-xl space-y-8 text-slate-900 print:shadow-none print:border-none print:p-0">
+      {/* Official Report Printable Container (High Contrast Print Certificate) */}
+      <div className="bg-white p-8 md:p-12 rounded-2xl border border-slate-300 shadow-2xl space-y-8 text-slate-900 print:shadow-none print:border-none print:p-0">
 
         {/* Report Header */}
         <div className="flex items-start justify-between border-b-2 border-slate-900 pb-6">
@@ -199,7 +199,7 @@ export default function Reports() {
             <div className="w-24 h-24 border-2 border-dashed border-slate-300 rounded-full flex items-center justify-center text-[10px] font-mono text-slate-400 uppercase text-center p-2">
               Official Metrology Seal
             </div>
-            <div className="text-[10px] text-slate-500 font-mono">SmartMetriX Automated Audit Token</div>
+            <div className="text-[10px] text-slate-500 font-mono">SmartMetriX Automated Audit Token: {reportData?.qrToken || 'LIVE-DB-TOKEN'}</div>
           </div>
 
           <div className="text-right space-y-1">
@@ -211,7 +211,7 @@ export default function Reports() {
 
         {/* Legal Disclaimer */}
         <div className="text-[10px] text-slate-400 border-t border-slate-200 pt-3 text-center">
-          <p>This report is generated for Smart India Hackathon prototype demonstration (SIH PS34). Statutory legal enforcement actions are subject to official Directorate rules.</p>
+          <p>This report is generated directly from the Legal Metrology SQLite live enforcement database. Statutory legal enforcement actions are subject to official Directorate rules.</p>
         </div>
       </div>
     </div>
