@@ -1,0 +1,1 @@
+const fs = require('fs'); fs.cpSync('smartmetrix/dist', 'dist', { recursive: true }); console.log('Copied dist to root');
