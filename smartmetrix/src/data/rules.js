@@ -1,0 +1,82 @@
+export const LEGAL_METROLOGY_RULES = [
+  {
+    id: "LM-001",
+    ruleNumber: "Rule 6(1)(a)",
+    declaration: "Product Name / Generic Identity",
+    description: "The name or generic description of the commodity contained in the package must be clearly specified on the principal display panel.",
+    severity: "High",
+    status: "Active",
+    version: "2011 Amendments 2022",
+    legalReference: "Legal Metrology (Packaged Commodities) Rules, 2011 - Section 6"
+  },
+  {
+    id: "LM-002",
+    ruleNumber: "Rule 6(1)(b)",
+    declaration: "Manufacturer / Packer Details",
+    description: "The name and complete address of the manufacturer, packer, or importer must be disclosed on the package.",
+    severity: "High",
+    status: "Active",
+    version: "2011 Amendments 2022",
+    legalReference: "Legal Metrology (Packaged Commodities) Rules, 2011 - Section 6"
+  },
+  {
+    id: "LM-003",
+    ruleNumber: "Rule 6(1)(c)",
+    declaration: "Net Quantity Statement",
+    description: "The net quantity in terms of standard unit of weight, measure or number must be printed clearly without qualification.",
+    severity: "High",
+    status: "Active",
+    version: "2011 Amendments 2022",
+    legalReference: "Legal Metrology (Packaged Commodities) Rules, 2011 - Section 6 & 11"
+  },
+  {
+    id: "LM-004",
+    ruleNumber: "Rule 6(1)(d)",
+    declaration: "MRP Declaration",
+    description: "Maximum Retail Price (MRP) inclusive of all taxes must be declared in standard Indian Rupee symbol (₹) format.",
+    severity: "High",
+    status: "Active",
+    version: "2011 Amendments 2022",
+    legalReference: "Legal Metrology (Packaged Commodities) Rules, 2011 - Section 6(1)(e)"
+  },
+  {
+    id: "LM-005",
+    ruleNumber: "Rule 6(1)(e)",
+    declaration: "Month & Year of Manufacture/Packing",
+    description: "The month and year in which the commodity is manufactured, packed or imported must be legibly printed.",
+    severity: "Medium",
+    status: "Active",
+    version: "2011 Amendments 2022",
+    legalReference: "Legal Metrology (Packaged Commodities) Rules, 2011 - Section 6(1)(d)"
+  },
+  {
+    id: "LM-006",
+    ruleNumber: "Rule 6(1)(f)",
+    declaration: "Consumer Care Details",
+    description: "Name, address, telephone number, and email address of the person or officer who can be contacted in case of consumer complaints.",
+    severity: "Medium",
+    status: "Active",
+    version: "2011 Amendments 2022",
+    legalReference: "Legal Metrology (Packaged Commodities) Rules, 2011 - Section 6(2)"
+  },
+  {
+    id: "LM-007",
+    ruleNumber: "Rule 6(1)(g)",
+    declaration: "Country of Origin",
+    description: "For imported products or locally packaged goods, country of origin must be stated prominently.",
+    severity: "Medium",
+    status: "Active",
+    version: "2011 Amendments 2022",
+    legalReference: "Legal Metrology (Packaged Commodities) Rules, 2011 - Amendment 2020"
+  },
+  {
+    id: "LM-008",
+    ruleNumber: "Rule 6(1)(h)",
+    declaration: "Unit Sale Price",
+    description: "Price per unit (per gram, per ml, per piece) for packages containing more than 1 unit/kg/litre.",
+    severity: "Low",
+    status: "Active",
+    version: "2022 Mandate",
+    legalReference: "Legal Metrology (Packaged Commodities) Amendment Rules, 2022"
+  }
+];
