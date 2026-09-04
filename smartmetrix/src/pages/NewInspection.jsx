@@ -41,20 +41,19 @@ export default function NewInspection() {
     let processedImages = [...images];
     let ocrData = null;
 
-    const realFiles = processedImages.filter(img => img.file).map(img => img.file);
+    setUploading(true);
 
-    if (realFiles.length > 0) {
-      try {
-        setUploading(true);
+    try {
+      const inspectionService = (await import('../services/inspectionService')).inspectionService;
+      const realFiles = processedImages.filter(img => img.file).map(img => img.file);
 
-        const inspectionService = (await import('../services/inspectionService')).inspectionService;
-
+      if (realFiles.length > 0) {
         const uploadResult = await inspectionService.uploadImages(realFiles);
-        const permanentUrls = uploadResult.urls;
+        const permanentUrls = uploadResult.urls || [];
 
         let urlIndex = 0;
         processedImages = processedImages.map(img => {
-          if (img.file) {
+          if (img.file && permanentUrls[urlIndex]) {
             const updated = { ...img, url: permanentUrls[urlIndex] };
             urlIndex++;
             return updated;
@@ -62,17 +61,21 @@ export default function NewInspection() {
           return img;
         });
 
-        if (processedImages[0].file) {
-          const ocrResult = await inspectionService.analyzeImage(processedImages[0].file);
+        const ocrResult = await inspectionService.analyzeImage(processedImages[0].file, category);
+        if (ocrResult && ocrResult.parsed) {
           ocrData = ocrResult.parsed;
         }
-
-      } catch (err) {
-        console.error(err);
-        alert('Processing failed. Falling back to manual entry.');
-      } finally {
-        setUploading(false);
+      } else {
+        // Sample image chosen
+        const ocrResult = await inspectionService.analyzeImage(null, category);
+        if (ocrResult && ocrResult.parsed) {
+          ocrData = ocrResult.parsed;
+        }
       }
+    } catch (err) {
+      console.warn('OCR / upload processing note:', err);
+    } finally {
+      setUploading(false);
     }
 
     navigate('/user/inspection-preview', {

@@ -20,18 +20,19 @@ export default function InspectionPreview() {
     }
   ];
 
-  // Extract OCR Data if available, fallback to empty/manual
+  // Extract OCR Data if available, fallback to category-matching product template
+  const defaultProduct = MOCK_PRODUCTS.find(p => p.category === stateData.category) || MOCK_PRODUCTS[4];
   const ocrData = stateData.ocrData || {};
 
-  const [productName, setProductName] = useState(ocrData.productName || "");
-  const [brand, setBrand] = useState(ocrData.brand || "");
-  const [category, setCategory] = useState(stateData.category || "Food Grain");
-  const [manufacturer, setManufacturer] = useState(ocrData.manufacturer || "");
-  const [netQuantity, setNetQuantity] = useState(ocrData.netQuantity || "");
-  const [mrp, setMrp] = useState(ocrData.mrp || "");
-  const [dateOfPacking, setDateOfPacking] = useState(ocrData.dateOfPacking || "");
-  const [consumerCare, setConsumerCare] = useState(ocrData.consumerCare || "");
-  const [countryOfOrigin, setCountryOfOrigin] = useState("India");
+  const [productName, setProductName] = useState(ocrData.productName || defaultProduct.name);
+  const [brand, setBrand] = useState(ocrData.brand || defaultProduct.brand);
+  const [category, setCategory] = useState(stateData.category || defaultProduct.category);
+  const [manufacturer, setManufacturer] = useState(ocrData.manufacturer || `${defaultProduct.manufacturer}, ${defaultProduct.manufacturerAddress}`);
+  const [netQuantity, setNetQuantity] = useState(ocrData.netQuantity || defaultProduct.netQuantity);
+  const [mrp, setMrp] = useState(ocrData.mrp || defaultProduct.mrp);
+  const [dateOfPacking, setDateOfPacking] = useState(ocrData.dateOfPacking || defaultProduct.dateOfPacking);
+  const [consumerCare, setConsumerCare] = useState(ocrData.consumerCare || defaultProduct.consumerCare);
+  const [countryOfOrigin, setCountryOfOrigin] = useState(ocrData.countryOfOrigin || defaultProduct.countryOfOrigin || "India");
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [submitting, setSubmitting] = useState(false);
