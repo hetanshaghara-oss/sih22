@@ -137,16 +137,16 @@ export default function Landing() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-5">
-                <div className="col-span-2 border-r border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-5">
+                <div className="sm:col-span-2 border-b sm:border-b-0 sm:border-r border-slate-800">
                   <img
                     src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=600"
                     alt="India Gate Basmati Rice packaging sample"
-                    className="w-full h-full object-cover min-h-[220px]"
+                    className="w-full h-48 sm:h-full object-cover min-h-[180px] sm:min-h-[220px]"
                   />
                 </div>
 
-                <div className="col-span-3 p-4 space-y-2.5 font-mono text-[12px]">
+                <div className="sm:col-span-3 p-4 space-y-2.5 font-mono text-[12px]">
                   <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                     <span className="text-slate-500">Product</span>
                     <span className="text-slate-200">India Gate Basmati 5kg</span>

@@ -43,9 +43,9 @@ export default function Reports() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto font-sans">
       {/* Top Controls Bar (No Print) */}
-      <div className="no-print glass-panel p-4 sm:p-6 rounded-2xl border border-slate-700/50 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="no-print glass-panel p-4 sm:p-6 rounded-2xl border border-slate-700/50 shadow-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/30 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
             <FileText className="w-5 h-5" />
           </div>
           <div>
@@ -58,12 +58,12 @@ export default function Reports() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           {/* Select Inspection Dropdown */}
           <select
             value={selectedId}
             onChange={(e) => setSelectedId(e.target.value)}
-            className="px-3 py-2 bg-slate-800/80 border border-slate-700/60 rounded-xl text-xs font-bold text-white focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 bg-slate-800/80 border border-slate-700/60 rounded-xl text-xs font-bold text-white focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
           >
             {inspections.map((item) => (
               <option key={item.id} value={item.id} className="bg-slate-900 text-white">
@@ -74,7 +74,7 @@ export default function Reports() {
 
           <button
             onClick={handlePrint}
-            className="px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-lg shadow-blue-900/50 flex items-center gap-2 transition"
+            className="px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2 transition w-full sm:w-auto"
           >
             <Printer className="w-4 h-4" />
             <span>Download PDF / Print</span>

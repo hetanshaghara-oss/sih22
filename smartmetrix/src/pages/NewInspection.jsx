@@ -173,8 +173,8 @@ export default function NewInspection() {
       </motion.div>
 
       {/* Action Footer */}
-      <motion.div variants={itemVariants} className="flex items-center justify-between p-5 glass-panel rounded-2xl">
-        <div className="flex items-center gap-2 text-xs text-slate-400">
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 glass-panel rounded-2xl">
+        <div className="flex items-center gap-2 text-xs text-slate-400 text-center sm:text-left">
           <Info className="w-4 h-4 text-blue-400 shrink-0" />
           <span>Image quality will be validated before automated OCR parsing.</span>
         </div>
@@ -185,7 +185,7 @@ export default function NewInspection() {
           disabled={uploading}
           whileHover={{ scale: uploading ? 1 : 1.05 }}
           whileTap={{ scale: uploading ? 1 : 0.95 }}
-          className="px-6 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-xl shadow-blue-900/50 flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto px-6 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-xl shadow-blue-900/50 flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span>{uploading ? 'Uploading & Processing...' : 'Continue to Review'}</span>
           {!uploading && <ArrowRight className="w-4 h-4" />}

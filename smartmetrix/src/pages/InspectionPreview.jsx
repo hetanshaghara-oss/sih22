@@ -198,8 +198,8 @@ export default function InspectionPreview() {
               <input type="text" required value={countryOfOrigin} onChange={(e) => setCountryOfOrigin(e.target.value)} className={inputCls} />
             </div>
 
-            <div className="pt-4 border-t border-slate-700/50 flex items-center justify-between">
-              <span className="text-xs text-slate-500 font-medium">
+            <div className="pt-4 border-t border-slate-700/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <span className="text-xs text-slate-500 font-medium text-center sm:text-left">
                 Submitter: <strong className="text-slate-300">Rahul Mehta (EO-8842-DL)</strong>
               </span>
 
@@ -208,7 +208,7 @@ export default function InspectionPreview() {
                 disabled={submitting}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-xl shadow-blue-900/50 flex items-center gap-2 transition-all disabled:opacity-50 disabled:scale-100"
+                className="w-full sm:w-auto px-8 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 rounded-xl shadow-xl shadow-blue-900/50 flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:scale-100"
               >
                 {submitting ? (
                   <span>Submitting...</span>

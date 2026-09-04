@@ -122,12 +122,12 @@ export default function AdminDashboard() {
       {/* Charts Grid */}
       <motion.div variants={containerVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Compliance Distribution Donut */}
-        <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-5 space-y-4">
+        <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-5 space-y-4 min-w-0">
           <div className="flex items-center justify-between border-b border-slate-700/50 pb-3">
             <h3 className="text-sm font-bold text-white">Compliance Status Distribution</h3>
             <span className="text-[11px] font-mono text-slate-500 font-semibold">Rule 6</span>
           </div>
-          <div className="h-64 w-full">
+          <div className="h-64 w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={charts.complianceDistribution} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={4} dataKey="value">
@@ -143,12 +143,12 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Inspections Over Time */}
-        <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-5 space-y-4">
+        <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-5 space-y-4 min-w-0">
           <div className="flex items-center justify-between border-b border-slate-700/50 pb-3">
             <h3 className="text-sm font-bold text-white">Inspection Volume & Trends</h3>
             <span className="text-[11px] font-mono text-slate-500 font-semibold">2026</span>
           </div>
-          <div className="h-64 w-full">
+          <div className="h-64 w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={charts.monthlyTrends}>
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#838f8d' }} />
@@ -163,16 +163,16 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Violations by Category */}
-        <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-5 space-y-4">
+        <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-5 space-y-4 min-w-0">
           <div className="flex items-center justify-between border-b border-slate-700/50 pb-3">
             <h3 className="text-sm font-bold text-white">Rule Violation Breakdown</h3>
             <span className="text-[11px] font-mono text-slate-500 font-semibold">Section 6</span>
           </div>
-          <div className="h-64 w-full">
+          <div className="h-64 w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={charts.violationsByCategory} layout="vertical">
                 <XAxis type="number" tick={{ fontSize: 11, fill: '#838f8d' }} />
-                <YAxis dataKey="category" type="category" width={160} tick={{ fontSize: 10, fill: '#838f8d' }} />
+                <YAxis dataKey="category" type="category" width={115} tick={{ fontSize: 10, fill: '#838f8d' }} />
                 <Tooltip contentStyle={{ backgroundColor: '#262b2a', border: '1px solid #39413f', borderRadius: '12px', color: '#fff', fontSize: '12px' }} />
                 <Bar dataKey="count" fill="#bd5344" radius={[0, 4, 4, 0]} />
               </BarChart>
@@ -181,12 +181,12 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Product Category Distribution */}
-        <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-5 space-y-4">
+        <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-5 space-y-4 min-w-0">
           <div className="flex items-center justify-between border-b border-slate-700/50 pb-3">
             <h3 className="text-sm font-bold text-white">Commodity Category Breakdown</h3>
             <span className="text-[11px] font-mono text-slate-500 font-semibold">Packaged Commodities</span>
           </div>
-          <div className="h-64 w-full">
+          <div className="h-64 w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={charts.categoryBreakdown}>
                 <XAxis dataKey="category" tick={{ fontSize: 11, fill: '#838f8d' }} />

@@ -68,26 +68,26 @@ export default function InspectionTable({
             </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             {/* Search */}
-            <div className="relative">
+            <div className="relative w-full sm:w-auto flex-1 sm:flex-initial">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search ID, product, brand..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 pr-4 py-2 text-xs bg-slate-800/60 border border-slate-700/60 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 w-60 sm:w-64 transition-all"
+                className="pl-9 pr-4 py-2 text-xs bg-slate-800/60 border border-slate-700/60 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64 transition-all"
               />
             </div>
 
             {/* Status Filter */}
-            <div className="flex items-center gap-1.5 bg-slate-800/60 border border-slate-700/60 rounded-xl px-3 py-1.5">
+            <div className="flex items-center gap-1.5 bg-slate-800/60 border border-slate-700/60 rounded-xl px-3 py-1.5 flex-1 sm:flex-initial">
               <Filter className="w-3.5 h-3.5 text-slate-400" />
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="text-xs font-medium text-slate-200 bg-transparent focus:outline-none cursor-pointer"
+                className="text-xs font-medium text-slate-200 bg-transparent focus:outline-none cursor-pointer w-full"
               >
                 <option value="all" className="bg-slate-900 text-white">All Statuses</option>
                 <option value="compliant" className="bg-slate-900 text-white">Compliant</option>
@@ -101,7 +101,7 @@ export default function InspectionTable({
             {(searchTerm || statusFilter !== 'all') && (
               <button
                 onClick={handleClearFilters}
-                className="p-2 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition"
+                className="p-2 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition shrink-0"
                 title="Clear Filters"
               >
                 <X className="w-4 h-4" />

@@ -88,8 +88,7 @@ export default function BoundingBoxOverlay({ image, title = "Packaging Label Ins
       {/* Image Container — position:relative so overlays are relative to this div */}
       <div
         ref={containerRef}
-        className="relative w-full overflow-hidden flex items-center justify-center bg-slate-950 min-h-[360px] max-h-[460px]"
-        style={{ height: '460px' }}
+        className="relative w-full overflow-hidden flex items-center justify-center bg-slate-950 h-[260px] sm:h-[360px] md:h-[460px]"
       >
         <img
           ref={imgRef}
