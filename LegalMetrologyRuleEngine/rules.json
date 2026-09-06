@@ -1,0 +1,150 @@
+{
+  "version": "0.1.0",
+  "sourceScope": "User-supplied Legal Metrology (Packaged Commodities) documents",
+  "rules": [
+    {
+      "ruleId": "LM-PC-001",
+      "field": "manufacturerPackerImporter",
+      "check": "required_for_applicable_package",
+      "severity": "HIGH",
+      "message": "Manufacturer, packer or importer identification and address must be declared where applicable.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011, package declarations; verify against current amendment text."
+    },
+    {
+      "ruleId": "LM-PC-002",
+      "field": "countryOfOrigin",
+      "check": "required_if_imported",
+      "severity": "HIGH",
+      "message": "Country of origin must be declared for imported packages where applicable.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011, package declarations; verify against current amendment text."
+    },
+    {
+      "ruleId": "LM-PC-003",
+      "field": "genericProductName",
+      "check": "required",
+      "severity": "HIGH",
+      "message": "Common/generic name of the commodity must be declared.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011, package declarations; verify against current amendment text."
+    },
+    {
+      "ruleId": "LM-PC-004",
+      "field": "netQuantity",
+      "check": "required_and_valid_unit",
+      "severity": "HIGH",
+      "message": "Net quantity/number must be declared using an applicable unit or count declaration.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-005",
+      "field": "netQuantity",
+      "check": "must_be_legible",
+      "severity": "MEDIUM",
+      "message": "Net quantity declaration must be clear and legible.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-006",
+      "field": "dateOfManufacturePackingImport",
+      "check": "required_unless_exempt",
+      "severity": "MEDIUM",
+      "message": "Month and year of manufacture, packing or import must be declared where applicable, subject to specified exemptions.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-007",
+      "field": "bestBeforeUseBy",
+      "check": "required_if_applicable",
+      "severity": "HIGH",
+      "message": "Best-before/use-by declaration must be present for commodities to which the requirement applies.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-008",
+      "field": "mrp",
+      "check": "required_unless_exempt",
+      "severity": "HIGH",
+      "message": "Maximum Retail Price (MRP) must be declared where applicable.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-009",
+      "field": "mrp",
+      "check": "must_include_applicable_taxes",
+      "severity": "HIGH",
+      "message": "MRP declaration must follow the applicable inclusive-tax requirement and prescribed wording/format.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-010",
+      "field": "consumerCare",
+      "check": "required",
+      "severity": "MEDIUM",
+      "message": "Consumer-care contact details must be declared as required by the rules.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-011",
+      "field": "principalDisplayPanel",
+      "check": "required_declarations_visible",
+      "severity": "MEDIUM",
+      "message": "Applicable mandatory declarations must be displayed in the prescribed manner on the package/principal display panel.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-012",
+      "field": "declarations",
+      "check": "must_be_clear_and_legible",
+      "severity": "MEDIUM",
+      "message": "Required package declarations must be clear, prominent and legible as prescribed.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-013",
+      "field": "unitSalePrice",
+      "check": "required_if_applicable",
+      "severity": "MEDIUM",
+      "message": "Unit sale price must be declared where the applicable provisions require it.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-014",
+      "field": "dimensions",
+      "check": "required_if_applicable",
+      "severity": "LOW",
+      "message": "Dimensions must be declared where the applicable commodity/package provisions require them.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-015",
+      "field": "multipleUnits",
+      "check": "required_if_multipack",
+      "severity": "MEDIUM",
+      "message": "For multipacks or packages containing multiple articles, applicable quantity/number declarations must be provided.",
+      "source": "Legal Metrology (Packaged Commodities) Rules, 2011; applicable amendments."
+    },
+    {
+      "ruleId": "LM-PC-016",
+      "field": "packageEvidence",
+      "check": "physical_evidence_priority",
+      "severity": "HIGH",
+      "message": "Web data must not be treated as proof that a declaration is printed on the physical package.",
+      "source": "Application-level verification policy; not a statutory rule."
+    },
+    {
+      "ruleId": "LM-PC-017",
+      "field": "packageVsWeb",
+      "check": "conflict_requires_review",
+      "severity": "HIGH",
+      "message": "If package evidence and official web information conflict, flag the item for manual review.",
+      "source": "Application-level verification policy; not a statutory rule."
+    },
+    {
+      "ruleId": "LM-PC-018",
+      "field": "missingPackageField",
+      "check": "official_web_found_but_package_missing",
+      "severity": "MEDIUM",
+      "message": "If a field is found on an official website but not on the package, mark it as needs review rather than package-compliant.",
+      "source": "Application-level verification policy; not a statutory rule."
+    }
+  ]
+}

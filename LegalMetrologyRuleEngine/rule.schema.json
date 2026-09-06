@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "required": [
+    "ruleId",
+    "field",
+    "check",
+    "severity",
+    "message",
+    "source"
+  ],
+  "properties": {
+    "ruleId": {
+      "type": "string"
+    },
+    "field": {
+      "type": "string"
+    },
+    "check": {
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    }
+  }
+}

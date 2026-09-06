@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { inspectionService } from '../services/inspectionService';
 import StatusBadge from '../components/StatusBadge';
 import Timeline from '../components/Timeline';
 import LoadingState from '../components/LoadingState';
 import BoundingBoxOverlay from '../components/BoundingBoxOverlay';
-import { ArrowLeft, FileText, Download, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Download } from 'lucide-react';
 
 export default function InspectionDetails() {
   const { id } = useParams();
   const [inspection, setInspection] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadInspection();
-  }, [id]);
-
-  const loadInspection = async () => {
+  const loadInspection = useCallback(async () => {
     setLoading(true);
     const data = await inspectionService.getInspectionById(id);
     setInspection(data);
     setLoading(false);
-  };
+  }, [id]);
+
+  useEffect(() => {
+    loadInspection();
+  }, [loadInspection]);
 
   if (loading || !inspection) return <LoadingState message="Loading inspection record..." />;
 

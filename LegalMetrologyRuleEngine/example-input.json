@@ -1,0 +1,32 @@
+{
+  "genericProductName": {
+    "value": "Example Salt",
+    "source": "PACKAGE"
+  },
+  "manufacturerPackerImporter": {
+    "value": "Example Foods Pvt Ltd, Gujarat",
+    "source": "PACKAGE"
+  },
+  "netQuantity": {
+    "value": "1 kg",
+    "source": "PACKAGE"
+  },
+  "mrp": {
+    "value": "₹50",
+    "source": "PACKAGE"
+  },
+  "consumerCare": {
+    "value": "1800-000-000",
+    "source": "PACKAGE"
+  },
+  "countryOfOrigin": {
+    "value": null,
+    "source": "MISSING",
+    "applicable": false
+  },
+  "bestBeforeUseBy": {
+    "value": "12 months",
+    "source": "PACKAGE",
+    "applicable": true
+  }
+}

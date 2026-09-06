@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { inspectionService } from '../services/inspectionService';
 import StatusBadge from '../components/StatusBadge';
-import { CheckCircle2, Clock, Loader2, ArrowRight, ShieldCheck, FileText, LayoutDashboard } from 'lucide-react';
+import { CheckCircle2, Clock, Loader2, ShieldCheck, FileText, LayoutDashboard } from 'lucide-react';
 
 export default function InspectionProcessing() {
   const { id } = useParams();
-  const [inspection, setInspection] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
+
+  const loadInspection = useCallback(async () => {
+    await inspectionService.getInspectionById(id);
+  }, [id]);
 
   useEffect(() => {
     loadInspection();
@@ -24,12 +27,7 @@ export default function InspectionProcessing() {
       clearTimeout(t3);
       clearTimeout(t4);
     };
-  }, [id]);
-
-  const loadInspection = async () => {
-    const data = await inspectionService.getInspectionById(id);
-    setInspection(data);
-  };
+  }, [loadInspection]);
 
   const steps = [
     { title: "Image received & logged into registry", desc: "Packaging photos secured with SHA-256 checksum." },

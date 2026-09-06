@@ -73,8 +73,12 @@ export const inspectionService = {
       { key: "countryOfOrigin", label: "Country of Origin", value: inspectionPayload.countryOfOrigin || "India", status: inspectionPayload.countryOfOrigin ? "valid" : "valid", rule: "LM-007" }
     ];
 
-    const validCount = declarations.filter((d) => d.status === "valid").length;
-    const computedScore = Math.round((validCount / declarations.length) * 100);
+    // Use rule engine declarations if available (from evaluateLegalMetrologyComplianceWithWebData)
+    const finalDeclarations = inspectionPayload.ruleEngineResult?.declarations || declarations;
+
+    const validCount = finalDeclarations.filter((d) => d.status === "valid").length;
+    const computedScore = inspectionPayload.ruleEngineResult?.score
+      ?? Math.round((validCount / finalDeclarations.length) * 100);
 
     const violations = [];
     if (!inspectionPayload.consumerCare || inspectionPayload.consumerCare.includes("Helpline: 1800-111-2222")) {
@@ -142,9 +146,16 @@ export const inspectionService = {
       verifiedBy: null,
       verifiedAt: null,
       images: processedImages,
-      declarations: declarations,
-      violations: violations,
+      declarations: finalDeclarations,
+      violations: [
+        ...violations,
+        ...(inspectionPayload.ruleEngineResult?.violations || [])
+      ],
       adminRemarks: "",
+      // Web Verification + Rule Engine results (persisted for InspectionResult display)
+      webVerificationResult: inspectionPayload.webVerificationResult || null,
+      ruleEngineResult: inspectionPayload.ruleEngineResult || null,
+      ruleEngineStatus: inspectionPayload.ruleEngineResult?.overallStatus || null,
       auditTimeline: [
         {
           title: "Inspection Submitted",
@@ -155,7 +166,17 @@ export const inspectionService = {
           title: "Image Quality & Region Detection Checked",
           date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' — ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
           actor: "SmartMetriX Automated Engine"
-        }
+        },
+        ...(inspectionPayload.webVerificationResult ? [{
+          title: `Web Verification: ${inspectionPayload.webVerificationResult.verificationStatus || 'COMPLETED'}`,
+          date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' — ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+          actor: "SmartMetriX Web Verification Engine"
+        }] : []),
+        ...(inspectionPayload.ruleEngineResult ? [{
+          title: `Legal Metrology Rule Engine: ${(inspectionPayload.ruleEngineResult.overallStatus || 'COMPLETED').toUpperCase().replace('_', ' ')}`,
+          date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' — ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+          actor: "SmartMetriX LegalMetrologyRuleEngine v2026"
+        }] : [])
       ]
     };
 
